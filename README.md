@@ -17,8 +17,7 @@ Requires Node.js >= 22.12 (see `.nvmrc`). Run `npm install`, then
 
 # Astro Scholar
 
-**[Live demo](https://whydevils.github.io/astro-scholar)**
-
+This is forked from astro-scholar at https://github.com/whydevils/astro-scholar.
 
 Built with [Astro](https://astro.build). Simple, fast, easy to configure and extend. Pages for introduction, publications, presentations, and a blog.
 
@@ -52,27 +51,10 @@ Each `.astro` file is a page. Edit them directly:
 - `publications.astro` — the filter UI (data is in `src/data/publications.json`)
 - `presentations.astro` — talks and slides
 
-### 4. Publications — `src/data/publications.json`
+### 4. Publications — `src/data/bibliography.bib`
 
-```json
-{
-  "id": 1,
-  "title": "Paper Title",
-  "authors": "You, Coauthor A",
-  "journal": "Journal or Conference Name",
-  "year": 2025,
-  "link": "https://...",
-  "authorship": "first",
-  "abstract": "...",
-  "doi": "10.xxxx/xxxxx",
-  "publicationType": "Journal"
-}
-```
-
-`authorship`: `"first"`, `"last"`, or `"other"`. Drives the authorship filter.
-`publicationType`: any string — `"Journal"`, `"Conference"`, `"Preprint"`, `"Book Chapter"`, etc. Each unique value becomes a filter button.
-
-See `src/data/README.md` for full field details.
+The publications are parsed from a BibTeX file.
+See `src/data/README.md` for details.
 
 ### 5. Blog posts — `src/pages/blog/`
 
