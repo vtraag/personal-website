@@ -111,7 +111,6 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                         data-type={pub.publicationType}
                         style={`--delay: ${Math.min(index * 0.02, 0.6)}s`}
                     >
-                        <div class="pub-number">{index + 1}</div>
                         <div class="pub-content">
                             <h3 class="pub-title">
                                 {pub.link ? (
@@ -345,9 +344,8 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
             pub.classList.remove('visible');
         });
 
-        filtered.forEach((pub, index) => {
+        filtered.forEach(pub => {
             pub.style.display = 'flex';
-            pub.querySelector('.pub-number').textContent = index + 1;
             setTimeout(() => pub.classList.add('visible'), 10);
             container.appendChild(pub);
         });
