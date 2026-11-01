@@ -1,14 +1,13 @@
 ---
-import { Image } from 'astro:assets';
 import SocialIcons from './SocialIcons.astro';
-import portraitImage from '../assets/portrait.png';
+import Portrait from './Portrait.astro';
 const { name, tagline } = Astro.props;
 ---
 
 <section class="hero">
   <div class="hero-content">
     <div class="portrait-container">
-      <Image src={portraitImage} alt={name} class="portrait" />
+      <Portrait alt={name} class="portrait" sizes="(max-width: 960px) min(250px, 80vw), 450px" />
     </div>
     <div class="hero-text">
       <h1>{name}</h1>

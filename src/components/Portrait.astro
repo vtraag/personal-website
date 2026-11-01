@@ -1,0 +1,31 @@
+---
+// Profile picture using the pre-scaled square images in src/assets/portrait/.
+// The files are served as-is; the browser picks the best size via srcset.
+import tiny from '../assets/portrait/square-tiny.png';
+import small from '../assets/portrait/square-small.png';
+import medium from '../assets/portrait/square-medium.png';
+import large from '../assets/portrait/square.png';
+
+interface Props {
+  alt: string;
+  class?: string;
+  // Rendered width of the image, used by the browser to choose from srcset
+  sizes: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const { alt, class: className, sizes, loading = 'eager' } = Astro.props;
+const srcset = [tiny, small, medium, large].map(img => `${img.src} ${img.width}w`).join(', ');
+---
+
+<img
+  src={small.src}
+  srcset={srcset}
+  sizes={sizes}
+  width={small.width}
+  height={small.height}
+  alt={alt}
+  class={className}
+  loading={loading}
+  decoding="async"
+/>

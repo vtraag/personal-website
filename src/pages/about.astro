@@ -1,8 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import { SITE_DATA } from '../constants';
-import portraitImage from '../assets/portrait.png';
+import Portrait from '../components/Portrait.astro';
 
 import '../styles/about.css';
 ---
@@ -14,7 +13,7 @@ import '../styles/about.css';
         <div class="about-content">
             <div class="about-intro-wrapper centered-column">
                 <div class="about-header centered-column">
-                    <Image src={portraitImage} alt={SITE_DATA.name} class="about-portrait" />
+                    <Portrait alt={SITE_DATA.name} class="about-portrait" sizes="120px" />
                     <h2 class="about-name">{SITE_DATA.name}</h2>
                 </div>
 
