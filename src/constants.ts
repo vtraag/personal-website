@@ -10,6 +10,10 @@ export const SITE_DATA = {
     // A brief tagline describing your role or expertise (3-5 words/phrases)
     tagline: "Computational Social Sciences | Science Studies | Network Science",
 
+    // Your main affiliation, shown on the home page above the tagline
+    // Set to empty string "" to hide it
+    affiliation: "Centre for Science and Technology Studies (CWTS), Leiden University",
+
     // Social media handles (username only, not full URL)
     // Set to empty string "" to hide an icon
     twitter: "",  // bird logo → twitter.com

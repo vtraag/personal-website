@@ -1,7 +1,7 @@
 ---
 import SocialIcons from './SocialIcons.astro';
 import Portrait from './Portrait.astro';
-const { name, tagline } = Astro.props;
+const { name, affiliation, tagline } = Astro.props;
 ---
 
 <section class="hero">
@@ -11,6 +11,7 @@ const { name, tagline } = Astro.props;
     </div>
     <div class="hero-text">
       <h1>{name}</h1>
+      {affiliation && <p class="affiliation">{affiliation}</p>}
       <p class="tagline">{tagline}</p>
       <SocialIcons
         size={40}
