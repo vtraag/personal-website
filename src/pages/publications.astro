@@ -112,13 +112,13 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                         style={`--delay: ${Math.min(index * 0.02, 0.6)}s`}
                     >
                         <div class="pub-content">
-                            <h3 class="pub-title">
+                            <p class="pub-title">
                                 {pub.link ? (
                                     <a href={pub.link} target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
                                         {pub.title}
                                     </a>
                                 ) : pub.title}
-                            </h3>
+                            </p>
                             <p class="pub-authors">
                                 {pub.authors.map((author, i) => (
                                     <Fragment>
