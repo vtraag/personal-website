@@ -549,16 +549,18 @@ a.list-item-title:active::after {
 
 .info-card {
     background-color: var(--color-bg-alt);
-    padding: 2.5rem;
+    padding: 1rem;
     border-radius: 12px;
-    text-align: center;
     border: 1px solid var(--color-border);
 }
 
 .info-card p {
     font-size: 1.1rem;
-    margin-bottom: 2rem;
     color: var(--color-text);
+}
+
+.info-card p + p {
+    margin-top: 2rem;
 }
 
 .info-card-link {
@@ -593,6 +595,10 @@ a.list-item-title:active::after {
     transform: translateY(-3px);
     background-color: rgba(0, 0, 0, 0.03);
     color: var(--color-accent);
+}
+
+.info-card + .custom-list {
+    margin-top: 1.5rem;
 }
 
 [data-theme="dark"] .info-card-link:active {

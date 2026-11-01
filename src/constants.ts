@@ -16,7 +16,7 @@ export const SITE_DATA = {
     x: "",        // X logo → x.com
 
     // Bluesky handle (without the @)
-    bluesky: "",
+    bluesky: "vtraag.bsky.social",
 
     // Mastodon profile (full URL, since it depends on the instance)
     mastodon: "https://social.cwts.nl/@vtraag",

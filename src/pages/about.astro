@@ -4,6 +4,41 @@ import { SITE_DATA } from '../constants';
 import Portrait from '../components/Portrait.astro';
 
 import '../styles/about.css';
+
+const mastodonUrl = new URL(SITE_DATA.mastodon);
+const contactOptions = [
+    {
+        label: 'E-mail',
+        href: `mailto:${SITE_DATA.email}`,
+        text: SITE_DATA.email,
+        icon: 'M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z',
+    },
+    {
+        label: 'Telephone',
+        href: 'tel:+31715273943',
+        text: '+31 (0)71 527 3943',
+        icon: 'M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z',
+    },
+    {
+        label: 'Mastodon',
+        href: SITE_DATA.mastodon,
+        text: `${mastodonUrl.pathname.slice(1)}@${mastodonUrl.host}`,
+        rel: 'me noopener noreferrer',
+        icon: 'M23.268 5.313c-.35-2.578-2.617-4.61-5.304-5.004C17.51.242 15.792 0 11.813 0h-.03c-3.98 0-4.835.242-5.288.309C3.882.692 1.496 2.518.917 5.127.64 6.412.61 7.837.661 9.143c.074 1.874.088 3.745.26 5.611.118 1.24.325 2.47.62 3.68.55 2.237 2.777 4.098 4.96 4.857 2.336.792 4.849.923 7.256.38.265-.061.527-.132.786-.213.585-.184 1.27-.39 1.774-.753a.057.057 0 0 0 .023-.043v-1.809a.052.052 0 0 0-.02-.041.053.053 0 0 0-.046-.01 20.282 20.282 0 0 1-4.709.545c-2.73 0-3.463-1.284-3.674-1.818a5.593 5.593 0 0 1-.319-1.433.053.053 0 0 1 .066-.054c1.517.363 3.072.546 4.632.546.376 0 .75 0 1.125-.01 1.57-.044 3.224-.124 4.768-.422.038-.008.077-.015.11-.024 2.435-.464 4.753-1.92 4.989-5.604.008-.145.03-1.52.03-1.67.002-.512.167-3.63-.024-5.545zm-3.748 9.195h-2.561V8.29c0-1.309-.55-1.976-1.67-1.976-1.23 0-1.846.79-1.846 2.35v3.403h-2.546V8.663c0-1.56-.617-2.35-1.848-2.35-1.112 0-1.668.668-1.67 1.977v6.218H4.822V8.102c0-1.31.337-2.35 1.011-3.12.696-.77 1.608-1.164 2.74-1.164 1.311 0 2.302.5 2.962 1.498l.638 1.06.638-1.06c.66-.999 1.65-1.498 2.96-1.498 1.13 0 2.043.395 2.74 1.164.675.77 1.012 1.81 1.012 3.12z',
+    },
+    {
+        label: 'Bluesky',
+        href: `https://bsky.app/profile/${SITE_DATA.bluesky}`,
+        text: `@${SITE_DATA.bluesky}`,
+        icon: 'M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.204-.659-.299-1.664-.621-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z',
+    },
+    {
+        label: 'LinkedIn',
+        href: `https://linkedin.com/in/${SITE_DATA.linkedin}`,
+        text: `linkedin.com/in/${SITE_DATA.linkedin}`,
+        icon: 'M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25a1.75 1.75 0 110-3.5 1.75 1.75 0 010 3.5zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.4 1.08 3.4 3.93z',
+    },
+];
 ---
 
 <Layout pageTitle="About">
@@ -22,25 +57,21 @@ import '../styles/about.css';
                     at the <a href="https://www.cwts.nl/" target="_blank" rel="noopener noreferrer">Centre for Science and Technology Studies (CWTS)</a>
                     of <a href="https://www.leidenuniv.nl/" target="_blank" rel="noopener noreferrer">Leiden University</a> in the Netherlands.
                     I am coordinating our <a href="https://www.cwts.nl/research/focal-areas/engagement-inclusion" target="_blank" rel="noopener noreferrer">Focal Area of Engagement &amp; Inclusion</a>
-                    and am leading the flagship project on science in societal contention. In addition to my scientific
-                    research, I am also a bibliometric consultant at CWTS.
+                    and am leading the flagship project on science in societal contention.
+                    At Leiden University, I am the chair of the <a href="https://www.organisatiegids.universiteitleiden.nl/en/faculties-and-institutes/social-and-behavioural-sciences/ethics-review-committee-social-sciences">Ethics Review Committee Social Sciences</a>.
+                    Since 2025 I serve as a board member of the <a href="https://www.issi-society.org/">International Society for Scientometrics and Informetrics</a>.
+                    Finally, I am an Academic Editor at <a href="https://journals.plos.org/plosone/">PLOS ONE</a>.
                 </p>
             </div>
 
             <section>
-                <h2>Research</h2>
+                <h2>Research Interest</h2>
                 <div class="info-card">
                     <p>
-                        My main interests are mathematical models in the social sciences with a focus on (social)
-                        networks, including topics such as complex networks, social influence (as in opinion dynamics
-                        and the like), and conflict. In particular, I am interested in how science and society interact
-                        on contentious issues. These are research topics where hopefully math can meet the social sciences.
+                        My main interests are mathematical models in the social sciences with a focus on (social) networks, including topics such as complex networks, social influence (as in opinion dynamics and the like), and conflict. In particular, I am interested in how science and society interact on contentious issues. These are research topics where hopefully math can meet the social sciences.
                     </p>
                 </div>
-            </section>
 
-            <section>
-                <h2>Research Interests</h2>
                 <ul class="custom-list">
                     <li>
                         <span class="list-item-title">Science and society</span>
@@ -54,28 +85,9 @@ import '../styles/about.css';
                         applied across the (social) sciences, from citation networks to international relations.</span>
                     </li>
                     <li>
-                        <span class="list-item-title">Social influence and conflict</span>
+                        <span class="list-item-title">Social influence and polarisation</span>
                         <span class="list-item-description">Mathematical models of social influence, opinion dynamics,
                         reputation and conflict.</span>
-                    </li>
-                    <li>
-                        <span class="list-item-title">Science studies and research evaluation</span>
-                        <span class="list-item-description">Scientometrics, research assessment and the use of metrics,
-                        studied with causal and quantitative methods.</span>
-                    </li>
-                </ul>
-            </section>
-
-            <section>
-                <h2>Positions</h2>
-                <ul class="work-list icon-list">
-                    <li>
-                        <div class="list-entry">
-                            <h3>Senior researcher</h3>
-                            <p class="institution">Centre for Science and Technology Studies (CWTS), Leiden University, 2015–present</p>
-                            <p>Coordinator of the Focal Area of Engagement &amp; Inclusion, leading the flagship project
-                            on science in societal contention, and bibliometric consultant.</p>
-                        </div>
                     </li>
                 </ul>
             </section>
@@ -105,22 +117,50 @@ import '../styles/about.css';
 
             <section>
                 <h2>Contact</h2>
+                <table class="contact-table">
+                    <tbody>
+                        {contactOptions.map((option) => (
+                            <tr>
+                                <td class="contact-icon" title={option.label}>
+                                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" role="img" aria-label={option.label}>
+                                        <path d={option.icon}></path>
+                                    </svg>
+                                </td>
+                                <td>
+                                    {option.href.startsWith('http')
+                                        ? <a href={option.href} target="_blank" rel={option.rel ?? 'noopener noreferrer'}>{option.text}</a>
+                                        : <a href={option.href}>{option.text}</a>}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
                 <p>
-                    You can probably best reach me through e-mail at
-                    <a href={`mailto:${SITE_DATA.email}`}>{SITE_DATA.email}</a>.
+                    If you want to see me in real life, here's my office at
+                    <a href="https://www.cwts.nl/" target="_blank" rel="noopener noreferrer">CWTS</a>:
                 </p>
-                <p>
-                    For security, you can use my
-                    <a href="https://keys.openpgp.org/search?q=0x6727C61107D0C6F0" target="_blank" rel="noopener noreferrer">PGP key</a>
-                    (fingerprint <code>42FE F12E E258 76A2 1926 49AA 6727 C611 07D0 C6F0</code>); details are also on
-                    <a href="https://keybase.io/vtraag" target="_blank" rel="noopener noreferrer">Keybase</a>.
-                </p>
-                <p>
-                    <strong>Visiting address:</strong>
-                    <a href="https://www.openstreetmap.org/search?query=Kolffpad%201%2C%20Leiden" target="_blank" rel="noopener noreferrer">Office B5.31, CWTS, Willem Einthoven Building, Kolffpad 1, 2333 BN Leiden</a>, the Netherlands<br />
-                    <strong>Postal address:</strong> CWTS, Leiden University, P.O. Box 905, 2300 AX Leiden, the Netherlands<br />
-                    <strong>Telephone:</strong> <a href="tel:+31715273943">+31 (0)71 527 3943</a>
-                </p>
+                <div class="contact-addresses">
+                    <div>
+                        <h3>Visiting address</h3>
+                        <address>
+                            <a href="https://www.openstreetmap.org/search?query=Kolffpad%201%2C%20Leiden" target="_blank" rel="noopener noreferrer">
+                                Office B5.31, CWTS<br />
+                                Willem Einthoven Building<br />
+                                Kolffpad 1<br />
+                                2333 BN Leiden, the Netherlands
+                            </a>
+                        </address>
+                    </div>
+                    <div>
+                        <h3>Postal address</h3>
+                        <address>
+                            CWTS<br />
+                            Leiden University<br />
+                            P.O. Box 905<br />
+                            2300 AX Leiden, the Netherlands
+                        </address>
+                    </div>
+                </div>
             </section>
         </div>
     </div>

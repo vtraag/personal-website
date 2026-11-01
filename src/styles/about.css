@@ -148,3 +148,40 @@
     color: var(--color-text-muted);
     line-height: 1.6;
 }
+
+/* Contact Addresses */
+.contact-addresses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 3rem;
+    margin: 1rem 0;
+}
+
+.contact-addresses h3 {
+    margin: 0 0 0.3rem 0;
+    font-size: 1rem;
+    color: var(--color-primary);
+}
+
+.contact-addresses address {
+    font-style: normal;
+    line-height: 1.6;
+}
+
+/* Contact Table */
+.contact-table {
+    border-collapse: collapse;
+    margin: 0.5rem 0 1.5rem 0;
+}
+
+.contact-table td {
+    padding: 0.4rem 1rem 0.4rem 0;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.contact-table .contact-icon {
+    width: 32px;
+    color: var(--color-accent);
+    line-height: 0;
+}
