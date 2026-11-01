@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "@retorquere/bibtex-parser": "^13.0.8",
-    "astro": "^6.1.9"
+    "astro": "^7.4.4"
   }
 }
