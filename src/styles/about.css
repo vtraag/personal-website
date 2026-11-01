@@ -13,6 +13,7 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
+    object-position: 50% 30%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 

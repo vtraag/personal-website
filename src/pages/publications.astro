@@ -1,17 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { SITE_DATA } from '../constants';
-import publicationsData from '../data/publications.json';
+import { publications as publicationsData } from '../lib/bibtex';
 
 import '../styles/publications.css';
 
 // Extract years for filters
-const years = [...new Set(publicationsData.map(pub => pub.year))].sort((a, b) => b - a);
+const years = [...new Set(publicationsData.map(pub => pub.year).filter(Boolean))].sort((a, b) => b - a);
 const minYear = Math.min(...years);
 const maxYear = Math.max(...years);
 
-// Extract unique publication types
-const publicationTypes = [...new Set(publicationsData.map(pub => pub.publicationType).filter(Boolean))];
+// Extract unique publication types, in a fixed, sensible order
+const TYPE_ORDER = ['Journal', 'Conference', 'Book chapter', 'Book', 'Preprint', 'Report', 'Thesis', 'Other'];
+const publicationTypes = [...new Set(publicationsData.map(pub => pub.publicationType).filter(Boolean))]
+    .sort((a, b) => TYPE_ORDER.indexOf(a) - TYPE_ORDER.indexOf(b));
 ---
 
 <Layout pageTitle="Publications">
@@ -20,7 +22,7 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
 
         <div class="info-card">
             <p>
-                For an up-to-date list of my peer-reviewed publications and preprints, see:
+                For citation metrics and an automatically updated list of my publications, see:
             </p>
             <a href={`https://scholar.google.com/citations?user=${SITE_DATA.scholar}`}
                class="info-card-link"
@@ -119,8 +121,8 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                         data-pub-id={pub.id}
                         data-year={pub.year}
                         data-title={pub.title.toLowerCase()}
-                        data-authors={pub.authors.toLowerCase()}
-                        data-journal={pub.journal.toLowerCase()}
+                        data-authors={pub.authorsText.toLowerCase()}
+                        data-journal={pub.venue.toLowerCase()}
                         data-authorship={pub.authorship}
                         data-abstract={pub.abstract.toLowerCase()}
                         data-type={pub.publicationType}
@@ -129,13 +131,22 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                         <div class="pub-number">{index + 1}</div>
                         <div class="pub-content">
                             <h3 class="pub-title">
-                                <a href={pub.link} target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                                    {pub.title}
-                                </a>
+                                {pub.link ? (
+                                    <a href={pub.link} target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        {pub.title}
+                                    </a>
+                                ) : pub.title}
                             </h3>
-                            <p class="pub-authors">{pub.authors}</p>
+                            <p class="pub-authors">
+                                {pub.authors.map((author, i) => (
+                                    <Fragment>
+                                        {author.isMe ? <strong class="pub-me">{author.name}</strong> : author.name}
+                                        {i < pub.authors.length - 1 ? ', ' : ''}
+                                    </Fragment>
+                                ))}
+                            </p>
                             <div class="pub-meta">
-                                <span class="pub-journal">{pub.journal}</span>
+                                <span class="pub-journal">{pub.venue}</span>
                                 <span class="pub-year">{pub.year}</span>
                                 {pub.publicationType && (
                                     <span class="pub-type">{pub.publicationType}</span>
@@ -144,6 +155,21 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                                     <a href={`https://doi.org/${pub.doi}`} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
                                         DOI
                                     </a>
+                                )}
+                                {pub.arxiv && (
+                                    <a href={`https://arxiv.org/abs/${pub.arxiv}`} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        arXiv
+                                    </a>
+                                )}
+                                {pub.slides && (
+                                    <a href={pub.slides} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        Slides
+                                    </a>
+                                )}
+                                {pub.bibtex && (
+                                    <button type="button" class="pub-doi pub-bibtex" data-bibtex={pub.bibtex} aria-label={`Copy BibTeX for ${pub.title}`}>
+                                        BibTeX
+                                    </button>
                                 )}
                             </div>
                             {pub.abstract && (
@@ -256,8 +282,23 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
 
     updateSliderZIndex();
 
+    // Copy BibTeX to clipboard
+    document.addEventListener('click', async (e) => {
+        const btn = e.target.closest('.pub-bibtex');
+        if (!btn) return;
+        e.stopPropagation();
+        try {
+            await navigator.clipboard.writeText(btn.dataset.bibtex);
+            btn.textContent = 'Copied!';
+        } catch {
+            btn.textContent = 'Copy failed';
+        }
+        setTimeout(() => { btn.textContent = 'BibTeX'; }, 1500);
+    }, true);
+
     // Card click to toggle abstract
     document.addEventListener('click', (e) => {
+        if (e.target.closest('.pub-bibtex')) return;
         const card = e.target.closest('.publication-card.has-abstract');
         if (card) {
             card.classList.toggle('expanded');

@@ -2,36 +2,46 @@
 // Site Configuration
 // ============================================================================
 // This file contains the main configuration for your academic website.
-// Replace the example data with your own information to customize your site.
 
 export const SITE_DATA = {
     // Your full name as you'd like it displayed
-    name: 'Dr. Beatrix Bumble',
+    name: 'Vincent Traag',
 
     // A brief tagline describing your role or expertise (3-5 words/phrases)
-    tagline: "Avian-Feline Fluff Dynamics | Lead Investigator",
+    tagline: "Computational Social Sciences | Senior researcher at CWTS, Leiden University",
 
     // Social media handles (username only, not full URL)
     // Set to empty string "" to hide an icon
-    twitter: "[your-twitter-handle]",  // bird logo → twitter.com
-    x: "",             // X logo → x.com
+    twitter: "",  // bird logo → twitter.com
+    x: "",        // X logo → x.com
 
     // Bluesky handle (without the @)
     bluesky: "",
-    linkedin: "[your-linkedin-template]",
-    github: "whydevils",
+
+    // Mastodon profile (full URL, since it depends on the instance)
+    mastodon: "https://social.cwts.nl/@vtraag",
+
+    linkedin: "vtraag",
+    github: "vtraag",
+
+    // ORCID iD
+    orcid: "0000-0003-3170-3879",
 
     // Google Scholar ID (found in your Scholar profile URL)
     // Example: https://scholar.google.com/citations?user=YOUR_ID_HERE
-    scholar: "[your-scholar-id]",
+    scholar: "Mwxxip0AAAAJ",
 
-    // Your email address (use [at] and [dot] to avoid spam bots)
-    email: "[your-email-address]",
+    // Your email address
+    email: "v.a.traag@cwts.leidenuniv.nl",
+
+    // Last name as it appears in bibliography.bib. Used to highlight your name
+    // in author lists and to detect first/last authorship.
+    bibAuthorLastName: "Traag",
 
     // One-line research tagline used for SEO and social sharing meta tags
-    description: "Your one-line research tagline for SEO and social sharing.",
+    description: "Vincent Traag — senior researcher at CWTS, Leiden University, working on networks, science & society, and computational social science.",
 
-    // Base URL of your deployed site (no trailing slash), e.g. "https://your-username.github.io"
+    // Base URL of your deployed site (no trailing slash)
     // Used for Open Graph tags. Leave empty if you haven't deployed yet.
-    siteUrl: "https://whydevils.github.io/astro-scholar/",
+    siteUrl: "https://www.traag.net",
 };

@@ -448,6 +448,9 @@
 }
 
 .pub-doi {
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
     padding: 0.2rem 0.6rem;
     background: color-mix(in oklch, var(--color-accent) 15%, transparent);
     color: var(--color-accent);
@@ -542,4 +545,10 @@
         text-align: center;
         min-width: max-content;
     }
+}
+
+/* Highlight own name in author lists */
+.pub-me {
+    font-weight: 600;
+    color: var(--color-text);
 }

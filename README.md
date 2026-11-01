@@ -1,3 +1,20 @@
+# traag.net
+
+Personal website of Vincent Traag, based on the
+[astro-scholar](https://github.com/whydevils/astro-scholar) template.
+
+Differences from the template:
+
+- Publications are generated from a BibTeX file (`src/data/bibliography.bib`),
+  see [`src/data/README.md`](src/data/README.md).
+- Content (home, about, contact) adapted from the previous traag.net.
+- The demo blog and presentations pages have been removed.
+
+Requires Node.js >= 22.12 (see `.nvmrc`). Run `npm install`, then
+`npm run dev` for a local preview or `npm run build` to build to `dist/`.
+
+---
+
 # Astro Scholar
 
 **[Live demo](https://whydevils.github.io/astro-scholar)**
