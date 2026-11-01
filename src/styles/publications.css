@@ -331,6 +331,20 @@
     gap: 0.9rem;
 }
 
+.year-header {
+    margin: 1rem 0 0 0;
+    padding-bottom: 0.3rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text);
+    border-bottom: 1px solid var(--color-border);
+    font-variant-numeric: tabular-nums;
+}
+
+.year-header:first-of-type {
+    margin-top: 0;
+}
+
 .publication-card {
     display: flex;
     gap: 1rem;

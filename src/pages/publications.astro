@@ -344,7 +344,18 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
             pub.classList.remove('visible');
         });
 
+        container.querySelectorAll('.year-header').forEach(header => header.remove());
+
+        const groupByYear = currentSort === 'year-desc' || currentSort === 'year-asc';
+        let previousYear = null;
         filtered.forEach(pub => {
+            if (groupByYear && pub.dataset.year !== previousYear) {
+                const header = document.createElement('h2');
+                header.className = 'year-header';
+                header.textContent = pub.dataset.year;
+                container.appendChild(header);
+                previousYear = pub.dataset.year;
+            }
             pub.style.display = 'flex';
             setTimeout(() => pub.classList.add('visible'), 10);
             container.appendChild(pub);
