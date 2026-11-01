@@ -104,8 +104,8 @@ p a:active,
 
 :root {
     /* Colors - Day Mode */
-    --color-primary: #1a1a1a;
-    --color-accent-base: #0d9488;
+    --color-primary: #4d4d4d;
+    --color-accent-base: #001158; /* Leiden University blue */
     --color-accent: var(--color-accent-base);
     --color-text: #1a1a1a;
     --color-text-muted: #666;
@@ -126,7 +126,7 @@ p a:active,
 /* Dark Mode Colors */
 [data-theme="dark"] {
     --color-primary: #f0f0f0;
-    --color-accent: color-mix(in oklch, var(--color-accent-base) 80%, white);
+    --color-accent: color-mix(in oklch, var(--color-accent-base) 50%, white);
     --color-text: #f0f0f0;
     --color-text-muted: #aaa;
     --color-bg: #181818;
@@ -419,6 +419,7 @@ body:has(.menu-toggle[aria-expanded="true"])::before {
 .social-icons {
     display: flex;
     gap: 1.5rem;
+    color: var(--color-primary);
 }
 
 .social-icons a {
