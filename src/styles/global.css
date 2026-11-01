@@ -73,29 +73,29 @@ a:active {
     color: var(--color-accent);
 }
 
-/* Links in text blocks should be recognizable */
+/* Links in text blocks are subtly set off: darker than the surrounding text
+   (lighter in dark mode). currentColor here is the inherited text colour. */
 p a,
 .extra-links a {
-    color: var(--color-primary);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-thickness: 1px;
-    font-weight: 500;
-    transition: all var(--transition-fast);
+    color: color-mix(in oklch, currentColor 50%, black);
+    transition: color var(--transition-fast);
+}
+
+[data-theme="dark"] p a,
+[data-theme="dark"] .extra-links a {
+    color: color-mix(in oklch, currentColor 50%, white);
 }
 
 @media (hover: hover) {
     p a:hover,
     .extra-links a:hover {
         color: var(--color-accent);
-        text-decoration-thickness: 2px;
     }
 }
 
 p a:active,
 .extra-links a:active {
     color: var(--color-accent);
-    text-decoration-thickness: 2px;
 }
 
 /* ==========================================================================
