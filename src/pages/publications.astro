@@ -153,6 +153,11 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                                         Slides
                                     </a>
                                 )}
+                                {pub.corrigendum && (
+                                    <a href={`https://doi.org/${pub.corrigendum}`} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        Corrigendum
+                                    </a>
+                                )}
                                 {pub.bibtex && (
                                     <button type="button" class="pub-doi pub-bibtex" data-bibtex={pub.bibtex} aria-label={`Copy BibTeX for ${pub.title}`}>
                                         BibTeX

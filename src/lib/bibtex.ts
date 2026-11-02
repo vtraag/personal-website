@@ -35,6 +35,7 @@ export interface Publication {
     link: string;
     preprint: Preprint | null;
     slides: string;
+    corrigendum: string;
     pdf: string;
     bibtex: string;
 }
@@ -232,7 +233,7 @@ function rawEntries(source: string): Map<string, string> {
         // Drop non-standard, site-only fields from the exported BibTeX.
         const cleaned = chunk
             .trim()
-            .replace(/^\s*(slide_url|preprint_url|abstract)\s*=.*$\n?/gim, '');
+            .replace(/^\s*(slide_url|preprint_url|corrigendum|abstract)\s*=.*$\n?/gim, '');
         map.set(m[1], cleaned);
     }
     return map;
@@ -276,6 +277,7 @@ function load(): Publication[] {
             link,
             preprint: pre,
             slides: str(f.slide_url),
+            corrigendum: str(f.corrigendum).replace(/^https?:\/\/(dx\.)?doi\.org\//i, ''),
             pdf: pdfs.get(entry.key) ?? '',
             bibtex: raw.get(entry.key) ?? '',
         };
