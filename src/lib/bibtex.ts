@@ -14,6 +14,12 @@ export interface Author {
     isMe: boolean;
 }
 
+export interface Preprint {
+    server: string;
+    id: string;
+    url: string;
+}
+
 export interface Publication {
     id: string;
     title: string;
@@ -27,8 +33,9 @@ export interface Publication {
     abstract: string;
     doi: string;
     link: string;
-    arxiv: string;
+    preprint: Preprint | null;
     slides: string;
+    pdf: string;
     bibtex: string;
 }
 
@@ -71,21 +78,72 @@ function isOwner(a: { firstName?: string; lastName?: string }): boolean {
     return (a.lastName ?? '').toLowerCase() === SITE_DATA.bibAuthorLastName.toLowerCase();
 }
 
-function arxivId(f: Record<string, unknown>): string {
-    const id = str(f.eprint);
-    if (!id) return '';
-    const archive = str(f.eprinttype || f.archiveprefix).toLowerCase();
-    if (archive && archive !== 'arxiv') return '';
-    // Without an explicit archive, only accept identifiers that look like arXiv IDs.
-    if (!archive && !/^(\d{4}\.\d{4,5}|[a-z-]+\/\d{7})(v\d+)?$/i.test(id)) return '';
+// Preprint servers recognised in `eprinttype` (or `archiveprefix`), keyed by
+// lower-case name. `eprint` holds the server's identifier for the preprint.
+const osf = (server: string) => (id: string) => `https://osf.io/preprints/${server}/${id}`;
+const viaDoi = (id: string) => `https://doi.org/${id}`;
+
+const PREPRINT_SERVERS: Record<string, { name: string; url: (id: string) => string }> = {
+    arxiv:     { name: 'arXiv',     url: id => `https://arxiv.org/abs/${id}` },
+    socarxiv:  { name: 'SocArXiv',  url: osf('socarxiv') },
+    psyarxiv:  { name: 'PsyArXiv',  url: osf('psyarxiv') },
+    metaarxiv: { name: 'MetaArXiv', url: osf('metaarxiv') },
+    edarxiv:   { name: 'EdArXiv',   url: osf('edarxiv') },
+    osf:       { name: 'OSF',       url: id => `https://osf.io/${id}` },
+    biorxiv:   { name: 'bioRxiv',   url: viaDoi },
+    medrxiv:   { name: 'medRxiv',   url: viaDoi },
+    ssrn:      { name: 'SSRN',      url: id => `https://ssrn.com/abstract=${id}` },
+    hal:       { name: 'HAL',       url: id => `https://hal.science/${id}` },
+    zenodo:    { name: 'Zenodo',    url: id => `https://zenodo.org/records/${id}` },
+    figshare:  { name: 'Figshare',  url: viaDoi },
+};
+
+const OSF_SERVERS = new Set(['socarxiv', 'psyarxiv', 'metaarxiv', 'edarxiv', 'osf']);
+
+function normaliseEprint(key: string, id: string): string {
+    id = id.replace(/^https?:\/\/(dx\.)?doi\.org\//i, '');
+    // OSF preprints are often given as a DOI ("10.31235/osf.io/abc12") or URL.
+    if (OSF_SERVERS.has(key)) id = id.replace(/^(https?:\/\/)?(10\.\d+\/)?osf\.io\/(preprints\/\w+\/)?/i, '');
     return id;
 }
 
-function publicationType(type: string, f: Record<string, unknown>, arxiv: string): string {
+// Preprint version of a publication, from `eprint` + `eprinttype`, or from the
+// site-only `preprint_url` field for servers not listed above.
+function preprint(f: Record<string, unknown>): Preprint | null {
+    const type = str(f.eprinttype || f.archiveprefix);
+    const key = type.toLowerCase();
+    let id = str(f.eprint);
+    const preprintUrl = str(f.preprint_url);
+
+    // Without an explicit archive, only accept identifiers that look like arXiv IDs.
+    const server = PREPRINT_SERVERS[key]
+        ?? (!type && /^(\d{4}\.\d{4,5}|[a-z-]+\/\d{7})(v\d+)?$/i.test(id) ? PREPRINT_SERVERS.arxiv : undefined);
+    if (id && server) id = normaliseEprint(key || 'arxiv', id);
+
+    const url = preprintUrl || (id && server ? server.url(id) : '');
+    if (!url) {
+        if (id && type) console.warn(`[bibtex] Unknown eprinttype "${type}"; add preprint_url to link it.`);
+        return null;
+    }
+    return { server: server?.name ?? (type || 'Preprint'), id: server ? id : '', url };
+}
+
+// Venue text for a preprint, e.g. "arXiv:2311.10260" or "SocArXiv".
+function preprintVenue(p: Preprint | null): string {
+    if (!p) return 'Preprint';
+    return p.server === 'arXiv' && p.id ? `arXiv:${p.id}` : p.server;
+}
+
+// Whether a journal field actually names a preprint server.
+function isPreprintJournal(journal: string, p: Preprint | null): boolean {
+    return /rxiv/i.test(journal) || (!!p && journal.toLowerCase() === p.server.toLowerCase());
+}
+
+function publicationType(type: string, f: Record<string, unknown>, pre: Preprint | null): string {
     const journal = str(f.journal);
     switch (type) {
         case 'article':
-            return journal && !/arxiv/i.test(journal) ? 'Journal' : 'Preprint';
+            return journal && !isPreprintJournal(journal, pre) ? 'Journal' : 'Preprint';
         case 'inproceedings':
         case 'conference':
             return 'Conference';
@@ -99,9 +157,9 @@ function publicationType(type: string, f: Record<string, unknown>, arxiv: string
             return 'Thesis';
         case 'techreport':
         case 'report':
-            return 'Report';
+            return /working paper/i.test(str(f.type)) ? 'Preprint' : 'Report';
         default:
-            return arxiv ? 'Preprint' : 'Other';
+            return pre ? 'Preprint' : 'Other';
     }
 }
 
@@ -112,7 +170,7 @@ function formatPages(pages: string): string {
     return `${start}–${end}`;
 }
 
-function venue(type: string, f: Record<string, unknown>, arxiv: string): string {
+function venue(type: string, f: Record<string, unknown>, pre: Preprint | null): string {
     const journal = str(f.journal);
     const volume = str(f.volume);
     const number = str(f.number);
@@ -120,7 +178,7 @@ function venue(type: string, f: Record<string, unknown>, arxiv: string): string 
 
     switch (type) {
         case 'article': {
-            if (!journal || /arxiv/i.test(journal)) return arxiv ? `arXiv:${arxiv}` : 'Preprint';
+            if (!journal || isPreprintJournal(journal, pre)) return preprintVenue(pre);
             let v = journal;
             if (volume) v += ` ${volume}${number ? `(${number})` : ''}`;
             if (pages) v += `${volume ? ':' : ', '}${pages}`;
@@ -145,14 +203,23 @@ function venue(type: string, f: Record<string, unknown>, arxiv: string): string 
             return `Master's thesis, ${str(f.school)}`;
         case 'techreport':
         case 'report':
-            return [str(f.institution), str(f.number) && `No. ${str(f.number)}`].filter(Boolean).join(', ');
+            // e.g. "Research on Research Institute, Working Paper No. 22"
+            return [str(f.institution), str(f.number) && [str(f.type), `No. ${str(f.number)}`].filter(Boolean).join(' ')].filter(Boolean).join(', ');
         default: {
             const v = str(f.howpublished || f.publisher || f.journal);
-            if (arxiv && (!v || /arxiv/i.test(v))) return `arXiv:${arxiv}`;
+            if (pre && (!v || isPreprintJournal(v, pre))) return preprintVenue(pre);
             return v;
         }
     }
 }
+
+// PDFs in src/data/pdf/, named after the citation key (case-sensitive), are
+// bundled with the site and linked from the publications page.
+const pdfFiles = import.meta.glob('../data/pdf/*.pdf', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
+const pdfs = new Map(Object.entries(pdfFiles).map(([path, url]) => [
+    path.split('/').pop()!.replace(/\.pdf$/, ''),
+    url,
+]));
 
 // Split the raw .bib source into entries so we can offer the original BibTeX
 // for each publication (useful for "copy BibTeX").
@@ -165,7 +232,7 @@ function rawEntries(source: string): Map<string, string> {
         // Drop non-standard, site-only fields from the exported BibTeX.
         const cleaned = chunk
             .trim()
-            .replace(/^\s*(slide_url|abstract)\s*=.*$\n?/gim, '');
+            .replace(/^\s*(slide_url|preprint_url|abstract)\s*=.*$\n?/gim, '');
         map.set(m[1], cleaned);
     }
     return map;
@@ -189,29 +256,35 @@ function load(): Publication[] {
         if (myIndex === 0) authorship = 'first';
         else if (myIndex > 0 && myIndex === rawAuthors.length - 1) authorship = 'last';
 
-        const arxiv = arxivId(f);
+        const pre = preprint(f);
         const doi = str(f.doi).replace(/^https?:\/\/(dx\.)?doi\.org\//i, '');
         const url = str(f.url);
-        const link = doi ? `https://doi.org/${doi}` : url || (arxiv ? `https://arxiv.org/abs/${arxiv}` : '');
+        const link = doi ? `https://doi.org/${doi}` : url || pre?.url || '';
 
         return {
             id: entry.key,
             title: cleanText(str(f.title)),
             authors,
             authorsText: authors.map(a => a.name).join(', '),
-            venue: cleanText(venue(type, f, arxiv)),
+            venue: cleanText(venue(type, f, pre)),
             year: parseInt(str(f.year), 10) || 0,
             month: parseMonth(f.month),
             authorship,
-            publicationType: publicationType(type, f, arxiv),
+            publicationType: publicationType(type, f, pre),
             abstract: cleanText(str(f.abstract)),
             doi,
             link,
-            arxiv,
+            preprint: pre,
             slides: str(f.slide_url),
+            pdf: pdfs.get(entry.key) ?? '',
             bibtex: raw.get(entry.key) ?? '',
         };
     });
+
+    const keys = new Set(pubs.map(p => p.id));
+    for (const name of pdfs.keys()) {
+        if (!keys.has(name)) console.warn(`[bibtex] src/data/pdf/${name}.pdf does not match any citation key.`);
+    }
 
     // Newest first; within a year, by month (unknown months last).
     return pubs.sort((a, b) => b.year - a.year || (b.month || 0) - (a.month || 0));

@@ -133,14 +133,19 @@ const publicationTypes = [...new Set(publicationsData.map(pub => pub.publication
                                 {pub.publicationType && (
                                     <span class="pub-type">{pub.publicationType}</span>
                                 )}
-                                {pub.doi && (
+                                {pub.doi && pub.preprint?.url.toLowerCase() !== `https://doi.org/${pub.doi}`.toLowerCase() && (
                                     <a href={`https://doi.org/${pub.doi}`} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
                                         DOI
                                     </a>
                                 )}
-                                {pub.arxiv && (
-                                    <a href={`https://arxiv.org/abs/${pub.arxiv}`} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                                        arXiv
+                                {pub.preprint && (
+                                    <a href={pub.preprint.url} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        {pub.preprint.server}
+                                    </a>
+                                )}
+                                {pub.pdf && (
+                                    <a href={pub.pdf} class="pub-doi" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">
+                                        PDF
                                     </a>
                                 )}
                                 {pub.slides && (
