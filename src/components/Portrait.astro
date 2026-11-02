@@ -1,31 +1,43 @@
 ---
-// Profile picture using the pre-scaled square images in src/assets/portrait/.
+// Profile picture using the pre-scaled square images in src/assets/portrait/
+// (light theme) and src/assets/portrait/dark/ (dark theme).
 // The files are served as-is; the browser picks the best size via srcset.
+// Both variants are rendered and CSS shows the one matching data-theme; the
+// hidden one is lazy-loaded so it is not fetched while display: none.
 import tiny from '../assets/portrait/square-tiny.png';
 import small from '../assets/portrait/square-small.png';
 import medium from '../assets/portrait/square-medium.png';
 import large from '../assets/portrait/square.png';
+import darkTiny from '../assets/portrait/dark/square-tiny.png';
+import darkSmall from '../assets/portrait/dark/square-small.png';
+import darkMedium from '../assets/portrait/dark/square-medium.png';
+import darkLarge from '../assets/portrait/dark/square.png';
 
 interface Props {
   alt: string;
   class?: string;
   // Rendered width of the image, used by the browser to choose from srcset
   sizes: string;
-  loading?: 'eager' | 'lazy';
 }
 
-const { alt, class: className, sizes, loading = 'eager' } = Astro.props;
-const srcset = [tiny, small, medium, large].map(img => `${img.src} ${img.width}w`).join(', ');
+const { alt, class: className, sizes } = Astro.props;
+const toSrcset = (imgs: ImageMetadata[]) => imgs.map(img => `${img.src} ${img.width}w`).join(', ');
+const variants = [
+  { theme: 'light', fallback: small, srcset: toSrcset([tiny, small, medium, large]) },
+  { theme: 'dark', fallback: darkSmall, srcset: toSrcset([darkTiny, darkSmall, darkMedium, darkLarge]) },
+];
 ---
 
-<img
-  src={small.src}
-  srcset={srcset}
-  sizes={sizes}
-  width={small.width}
-  height={small.height}
-  alt={alt}
-  class={className}
-  loading={loading}
-  decoding="async"
-/>
+{variants.map(({ theme, fallback, srcset }) => (
+  <img
+    src={fallback.src}
+    srcset={srcset}
+    sizes={sizes}
+    width={fallback.width}
+    height={fallback.height}
+    alt={alt}
+    class:list={[className, `portrait-${theme}`]}
+    loading="lazy"
+    decoding="async"
+  />
+))}

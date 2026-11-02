@@ -134,6 +134,16 @@ p a:active,
     --color-border: #333;
 }
 
+/* Show the portrait variant matching the current theme */
+.portrait-dark,
+[data-theme="dark"] .portrait-light {
+    display: none;
+}
+
+[data-theme="dark"] .portrait-dark {
+    display: revert;
+}
+
 /* ==========================================================================
    Layout Sections
    ========================================================================== */
