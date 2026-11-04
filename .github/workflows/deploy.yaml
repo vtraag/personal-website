@@ -51,8 +51,8 @@ jobs:
         run: |
           ls -la
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
-          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          printf "$DEPLOY_KEY" > ~/.ssh/traag_deploy && chmod 600 ~/.ssh/traag_deploy
+          printf "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           rsync -az \
-            -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }}" \
+            -e "ssh -i ~/.ssh/traag_deploy -p ${{ secrets.SSH_PORT }}" \
             dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_HOST_PATH }}"
