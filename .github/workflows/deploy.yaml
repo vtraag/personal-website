@@ -41,7 +41,8 @@ jobs:
           name: github-pages
       - name: Unpack artifact
         run: |
-          tar -xvf artifact.tar
+          mkdir dist
+          tar -xvf artifact.tar -C dist
           rm artifact.tar
       - name: Deploy via rsync
         env:
@@ -54,4 +55,4 @@ jobs:
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
           rsync -az \
             -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }}" \
-            public/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/"
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_HOST_PATH }}"
