@@ -35,6 +35,10 @@ jobs:
     environment:
       name: site-deploy
     steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v5
+        with:
+          name: github-pages
       - name: Deploy via rsync
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
