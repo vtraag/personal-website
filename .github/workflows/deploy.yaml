@@ -52,6 +52,6 @@ jobs:
           install -m 700 -d ~/.ssh
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy && chmod 600 ~/.ssh/deploy
           printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
-          rsync -az --delete --exclude-from=.rsync-exclude \
+          rsync -az \
             -e "ssh -i ~/.ssh/deploy -p ${{ secrets.SSH_PORT }}" \
             public/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/"

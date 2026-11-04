@@ -1,3 +1,0 @@
-# files that live only on the server: never upload, never delete
-.htaccess
-robots.txt
