@@ -39,6 +39,10 @@ jobs:
         uses: actions/download-artifact@v5
         with:
           name: github-pages
+      - name: Unpack artifact
+        run: |
+          tar -xzvf artifact.tar
+          rm artifact.tar
       - name: Deploy via rsync
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
